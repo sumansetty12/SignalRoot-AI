@@ -1,168 +1,164 @@
+"""SignalRoot AI: transparent, read-only incident diagnosis baseline.
+
+This is a research prototype, not an AI model or a production remediation tool.
+"""
 from __future__ import annotations
 
-import json
-from pathlib import Path
+import re
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(
-    title="SignalRoot AI",
-    description="SignalRoot AI prototype for evidence-grounded diagnosis of simulated incidents.",
-    version="0.1.0",
-)
-
-SCENARIO_PATH = Path(__file__).parent / "scenarios" / "deployment_regression.json"
-
+app = FastAPI(title="SignalRoot AI", version="0.3.0",
+              description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
-    timestamp: str
-    source: str
+    timestamp: str = "unknown"
+    source: str = "unknown"
     name: str
-    value: str
+    value: Any = None
     note: str = ""
 
-
 class Incident(BaseModel):
-    incident_id: str = "custom-incident"
-    summary: str
+    incident_id: str = "manual-incident"
+    summary: str = "Incident under investigation"
     signals: list[Signal] = Field(default_factory=list)
 
+# Deliberately small and explainable heuristic baseline. No learned weights.
+DEPLOY_WORDS = ("deployment", "deploy", "release", "rollout", "new version", "new build")
+DATABASE_WORDS = ("database", "postgres", "aurora", "sql", "db connection", "query pool")
+DEPENDENCY_WORDS = ("dependency", "upstream", "third-party", "external service", "payment service", "identity service")
+ERROR_WORDS = ("5xx", "500 error", "error rate", "failed request", "server error", "http error")
+LATENCY_WORDS = ("latency", "p95", "response time", "timeout")
+NEGATIVE_WORDS = ("unhealthy", "unavailable", "disconnected", "failed", "failure", "timeout", "timed out", "degraded", "saturated", "exhausted", "elevated", "increased", "spiked", "slow", "high error")
+POSITIVE_WORDS = ("healthy", "normal", "operational", "connected", "successful", "no errors", "within threshold")
 
-def load_demo_incident() -> dict[str, Any]:
-    with SCENARIO_PATH.open("r", encoding="utf-8") as file:
-        return json.load(file)
+
+def contains(text: str, words: tuple[str, ...]) -> bool:
+    return any(w in text for w in words)
 
 
-def diagnose(incident: Incident) -> dict[str, Any]:
-    """Small deterministic baseline; deliberately not an LLM or production RCA engine."""
-    signal_text = " ".join(
-        f"{s.source} {s.name} {s.value} {s.note}".lower()
-        for s in incident.signals
-    )
+def state(text: str) -> str:
+    """Coarse signal health. Generic numbers are not interpreted as failures."""
+    if contains(text, NEGATIVE_WORDS):
+        return "unhealthy"
+    if contains(text, POSITIVE_WORDS):
+        return "healthy"
+    return "unknown"
 
-    hypotheses: list[dict[str, Any]] = []
 
-    deployment_terms = ("deployment", "release", "version", "rollout")
-    error_terms = ("5xx", "error rate", "http errors", "server errors")
-    latency_terms = ("latency", "p95", "response time")
+def evidence(signal: Signal) -> str:
+    return f"{signal.timestamp} | {signal.source} | {signal.name}: {signal.value} {signal.note}".strip()
 
-    deployment_evidence = [
-        s for s in incident.signals
-        if any(term in f"{s.name} {s.note} {s.value}".lower() for term in deployment_terms)
+
+def unique(items: list[str]) -> list[str]:
+    return list(dict.fromkeys(items))
+
+
+def diagnose(incident: Incident) -> dict:
+    scores = {"Deployment regression": 0, "Dependency or database degradation": 0}
+    support: dict[str, list[str]] = {k: [] for k in scores}
+    counter: dict[str, list[str]] = {k: [] for k in scores}
+    deployment_seen = False
+    app_symptom_seen = False
+    for sig in incident.signals:
+        text = f"{sig.source} {sig.name} {sig.value} {sig.note}".lower()
+        health = state(text)
+        item = evidence(sig)
+        is_deployment = contains(text, DEPLOY_WORDS)
+        is_database = contains(text, DATABASE_WORDS)
+        is_dependency = contains(text, DEPENDENCY_WORDS)
+        is_app_symptom = contains(text, ERROR_WORDS + LATENCY_WORDS) and health == "unhealthy"
+
+        if is_deployment:
+            deployment_seen = True
+            support["Deployment regression"].append(item)
+        if is_app_symptom and not (is_database or is_dependency):
+            app_symptom_seen = True
+            # Application symptoms alone do NOT establish a deployment cause.
+            support["Deployment regression"].append(item)
+        if is_database or is_dependency:
+            if health == "unhealthy":
+                scores["Dependency or database degradation"] += 3
+                support["Dependency or database degradation"].append(item)
+            elif health == "healthy":
+                counter["Dependency or database degradation"].append(item)
+
+    # A release plus an independently observed application symptom is a
+    # plausible deployment hypothesis, not proof of causation.
+    if deployment_seen and app_symptom_seen:
+        scores["Deployment regression"] = 4
+    elif deployment_seen:
+        scores["Deployment regression"] = 1
+
+    ordered = sorted(scores, key=lambda key: scores[key], reverse=True)
+    top, runner_up = ordered
+    top_score = scores[top]
+    margin = top_score - scores[runner_up]
+    # Abstain on weak, indistinguishable, or conflicting evidence.
+    if top_score < 3 or margin < 2:
+        diagnosis = "Insufficient evidence"
+        status = "insufficient_evidence"
+        confidence = "low"
+    else:
+        diagnosis = top
+        status = "hypothesis_available"
+        confidence = "medium"  # not a calibrated probability
+
+    hypotheses = [
+        {"name": name, "score": scores[name],
+         "supporting_evidence": unique(support[name]),
+         "counterevidence": unique(counter[name])}
+        for name in ordered
     ]
-    error_evidence = [
-        s for s in incident.signals
-        if any(term in f"{s.name} {s.note} {s.value}".lower() for term in error_terms)
-    ]
-    latency_evidence = [
-        s for s in incident.signals
-        if any(term in f"{s.name} {s.note} {s.value}".lower() for term in latency_terms)
-    ]
-
-    score = 0
-    evidence: list[str] = []
-    if deployment_evidence:
-        score += 2
-        evidence.extend(
-            f"{s.timestamp}: {s.name} — {s.value}" for s in deployment_evidence
-        )
-    if error_evidence:
-        score += 2
-        evidence.extend(
-            f"{s.timestamp}: {s.name} — {s.value}" for s in error_evidence
-        )
-    if latency_evidence:
-        score += 1
-        evidence.extend(
-            f"{s.timestamp}: {s.name} — {s.value}" for s in latency_evidence
-        )
-
-    hypotheses.append({
-        "cause": "Deployment regression",
-        "score": score,
-        "supporting_evidence": evidence,
-        "explanation": (
-            "A release event and post-release error/latency symptoms are present. "
-            "This is a plausible hypothesis, not proof that the release caused the incident."
-        ),
-        "confidence": "medium" if score >= 4 else "low",
-    })
-
-    hypotheses.append({
-        "cause": "Dependency or database degradation",
-        "score": 1 if any(
-            term in signal_text for term in ("database", "dependency", "timeout", "connection")
-        ) else 0,
-        "supporting_evidence": [
-            f"{s.timestamp}: {s.name} — {s.value}"
-            for s in incident.signals
-            if any(term in f"{s.name} {s.note} {s.value}".lower()
-                   for term in ("database", "dependency", "timeout", "connection"))
-        ],
-        "explanation": "Check dependency health if supporting telemetry is available.",
-        "confidence": "low",
-    })
-
-    hypotheses.sort(key=lambda item: item["score"], reverse=True)
+    if diagnosis == "Deployment regression":
+        steps = ["Compare metrics before and after the release.",
+                 "Inspect release changes and error logs; do not automatically roll back."]
+    elif diagnosis == "Dependency or database degradation":
+        steps = ["Check database and upstream dependency telemetry around incident start.",
+                 "Verify failure scope; do not automatically restart services."]
+    else:
+        steps = ["Collect timestamped errors, deployment events, dependency health, and database metrics.",
+                 "Do not select a root cause until competing hypotheses can be distinguished."]
     return {
         "incident_id": incident.incident_id,
         "summary": incident.summary,
-        "method": "deterministic_rules_baseline",
+        "status": status,
+        "diagnosis": diagnosis,
+        "confidence": confidence,
+        "score_type": "heuristic_points_not_probability",
         "hypotheses": hypotheses,
-        "recommended_checks": [
-            "Compare error rate and latency before and after the release timestamp.",
-            "Inspect the release diff and application errors for the affected service.",
-            "Check dependency health before concluding that the deployment is the cause.",
-            "If the evidence is inconclusive, gather more telemetry rather than guessing.",
-        ],
-        "safety_note": (
-            "No action was executed. Treat these results as hypotheses; use a human "
-            "reviewer and a tested rollback procedure before making production changes."
-        ),
+        "supporting_evidence": unique(support.get(diagnosis, [])),
+        "counterevidence": unique(counter.get(diagnosis, [])),
+        "recommendations": steps,
+        "safety_note": "Read-only prototype; no remediation actions are executed.",
     }
 
+DEMO = Incident(incident_id="deployment-demo", summary="API failures after release", signals=[
+    Signal(timestamp="10:00", source="deployments", name="Release rollout", value="v2 deployed"),
+    Signal(timestamp="10:04", source="metrics", name="HTTP 5xx error rate", value="elevated"),
+])
 
 @app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
-
+def health():
+    return {"status": "ok", "version": app.version}
 
 @app.get("/incident")
-def demo_incident() -> dict[str, Any]:
-    payload = load_demo_incident()
-    incident = Incident(
-        incident_id=payload["incident_id"],
-        summary=payload["summary"],
-        signals=[Signal(**signal) for signal in payload["signals"]],
-    )
-    return diagnose(incident)
-
+def incident():
+    return DEMO.model_dump()
 
 @app.post("/diagnose")
-def diagnose_custom(incident: Incident) -> dict[str, Any]:
-    if not incident.signals:
-        raise HTTPException(status_code=400, detail="Provide at least one evidence signal.")
+def diagnose_endpoint(incident: Incident):
     return diagnose(incident)
 
-
 @app.get("/", response_class=HTMLResponse)
-def home() -> str:
-    return """
-    <!doctype html>
-    <html lang="en">
-      <head><meta charset="utf-8"><title>Startup SRE Copilot</title></head>
-      <body style="font-family: system-ui; max-width: 820px; margin: 3rem auto; padding: 0 1rem;">
-        <h1>Startup SRE Copilot</h1>
-        <p>Prototype: evidence-grounded diagnosis for simulated incidents.</p>
-        <ul>
-          <li><a href="/incident">Run the deployment-regression example</a></li>
-          <li><a href="/docs">Explore the API</a></li>
-          <li><a href="/health">Check service health</a></li>
-        </ul>
-        <p><strong>Safety:</strong> synthetic data only; no production actions are performed.</p>
-      </body>
-    </html>
-    """
+def index():
+    return """<!doctype html><html><head><title>SignalRoot AI</title></head>
+    <body style='font:16px Arial;max-width:760px;margin:60px auto;line-height:1.6'>
+    <h1>SignalRoot AI</h1><p>Evidence-grounded incident diagnosis research baseline.</p>
+    <p><a href='/docs'>Interactive API docs</a> | <a href='/health'>Health</a> |
+    <a href='/incident'>Example incident</a></p>
+    <p>This is a read-only heuristic research prototype using synthetic incident data.</p>
+    </body></html>"""

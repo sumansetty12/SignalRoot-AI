@@ -1,58 +1,99 @@
-from fastapi.testclient import TestClient
+import json
+from pathlib import Path
 
-from app import app
+import pytest
+from fastapi.testclient import TestClient
+from app import app, diagnose, Incident, Signal
 
 client = TestClient(app)
 
 
-def test_health_endpoint():
-    response = client.get("/health")
-    assert response.status_code == 200
-    assert response.json()["status"] == "ok"
+def case(*signals):
+    return Incident(signals=[Signal(**s) for s in signals])
 
 
-def test_demo_incident_ranks_deployment_regression_first():
-    response = client.get("/incident")
-    assert response.status_code == 200
-    body = response.json()
-
-    assert body["method"] == "deterministic_rules_baseline"
-    assert body["hypotheses"][0]["cause"] == "Deployment regression"
-    assert body["hypotheses"][0]["supporting_evidence"]
-    assert "No action was executed" in body["safety_note"]
+def sig(name, value, source="metrics", timestamp="10:00"):
+    return {"name": name, "value": value, "source": source, "timestamp": timestamp}
 
 
-def test_diagnose_requires_signals():
-    response = client.post(
-        "/diagnose",
-        json={"incident_id": "empty", "summary": "No evidence supplied", "signals": []},
-    )
-    assert response.status_code == 400
+def test_health():
+    result = client.get('/health')
+    assert result.status_code == 200
+    assert result.json()['status'] == 'ok'
 
 
-def test_custom_incident_with_release_and_errors():
-    response = client.post(
-        "/diagnose",
-        json={
-            "incident_id": "test-1",
-            "summary": "Errors after a release",
-            "signals": [
-                {
-                    "timestamp": "2026-01-01T10:00:00Z",
-                    "source": "release_system",
-                    "name": "deployment",
-                    "value": "release v2",
-                    "note": "rollout completed",
-                },
-                {
-                    "timestamp": "2026-01-01T10:02:00Z",
-                    "source": "metrics",
-                    "name": "HTTP 5xx error rate",
-                    "value": "10%",
-                    "note": "server errors increased",
-                },
-            ],
-        },
-    )
-    assert response.status_code == 200
-    assert response.json()["hypotheses"][0]["cause"] == "Deployment regression"
+def test_example_deployment():
+    demo = client.get('/incident').json()
+    result = client.post('/diagnose', json=demo)
+    assert result.status_code == 200
+    assert result.json()['diagnosis'] == 'Deployment regression'
+
+
+def test_empty_signals_abstain():
+    result = client.post('/diagnose', json={'signals': []}).json()
+    assert result['diagnosis'] == 'Insufficient evidence'
+    assert result['status'] == 'insufficient_evidence'
+
+
+def test_database_timeout():
+    result = diagnose(case(sig('Database connection', 'failed timeout', 'database')))
+    assert result['diagnosis'] == 'Dependency or database degradation'
+
+
+def test_upstream_unavailable():
+    result = diagnose(case(sig('Payment service dependency', 'unavailable', 'dependencies')))
+    assert result['diagnosis'] == 'Dependency or database degradation'
+
+
+def test_generic_error_without_release_abstains():
+    result = diagnose(case(sig('HTTP 5xx error rate', 'elevated')))
+    assert result['diagnosis'] == 'Insufficient evidence'
+
+
+def test_generic_alert_abstains():
+    result = diagnose(case(sig('Alert', 'fired')))
+    assert result['diagnosis'] == 'Insufficient evidence'
+
+
+def test_healthy_database_not_failure():
+    result = diagnose(case(sig('Database health', 'healthy and connected', 'database')))
+    assert result['diagnosis'] == 'Insufficient evidence'
+    infrastructure = next(h for h in result['hypotheses'] if h['name'].startswith('Dependency'))
+    assert infrastructure['counterevidence']
+    assert infrastructure['score'] == 0
+
+
+def test_healthy_database_and_generic_errors_abstains():
+    result = diagnose(case(sig('Database health', 'healthy', 'database'),
+                           sig('HTTP 5xx error rate', 'elevated')))
+    assert result['diagnosis'] == 'Insufficient evidence'
+
+
+def test_mixed_competing_causes_abstains():
+    result = diagnose(case(sig('Release rollout', 'v2 deployed', 'deployments'),
+                           sig('HTTP 5xx error rate', 'elevated'),
+                           sig('Database connection', 'failed timeout', 'database')))
+    assert result['diagnosis'] == 'Insufficient evidence'
+
+
+def test_duplicate_evidence_removed():
+    result = diagnose(case(sig('Release rollout', 'v2 deployed', 'deployments'),
+                           sig('Release rollout', 'v2 deployed', 'deployments'),
+                           sig('HTTP 5xx error rate', 'elevated')))
+    assert len(result['supporting_evidence']) == len(set(result['supporting_evidence']))
+
+
+def test_score_not_claimed_probability():
+    result = diagnose(case(sig('Release rollout', 'v2 deployed', 'deployments'),
+                           sig('HTTP 5xx error rate', 'elevated')))
+    assert result['score_type'] == 'heuristic_points_not_probability'
+    assert 'no remediation actions' in result['safety_note'].lower()
+
+
+def test_benchmark_file_has_valid_ground_truth():
+    path = Path(__file__).resolve().parents[1] / 'benchmark' / 'scenarios.json'
+    cases = json.loads(path.read_text())
+    assert len(cases) >= 12
+    assert len({case['id'] for case in cases}) == len(cases)
+    assert {case['expected'] for case in cases} == {
+        'Deployment regression', 'Dependency or database degradation', 'Insufficient evidence'}

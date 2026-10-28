@@ -1,0 +1,277 @@
+[
+  {
+    "id": "deployment-001",
+    "expected": "Deployment regression",
+    "summary": "New rollout with elevated 5xx",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Release rollout",
+        "value": "v2 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "HTTP 5xx error rate",
+        "value": "elevated"
+      }
+    ]
+  },
+  {
+    "id": "deployment-002",
+    "expected": "Deployment regression",
+    "summary": "Release followed by p95 spike",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v3 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "API p95 latency",
+        "value": "spiked"
+      }
+    ]
+  },
+  {
+    "id": "deployment-003",
+    "expected": "Deployment regression",
+    "summary": "Deployed build and server errors",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "New build",
+        "value": "v4 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "Server error rate",
+        "value": "increased"
+      }
+    ]
+  },
+  {
+    "id": "deployment-004",
+    "expected": "Deployment regression",
+    "summary": "Release plus failed requests",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Deployment",
+        "value": "v5 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "Failed requests",
+        "value": "increased"
+      }
+    ]
+  },
+  {
+    "id": "database-001",
+    "expected": "Dependency or database degradation",
+    "summary": "Database unavailable",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "database",
+        "name": "Database connection",
+        "value": "failed timeout"
+      }
+    ]
+  },
+  {
+    "id": "database-002",
+    "expected": "Dependency or database degradation",
+    "summary": "Pool saturation and errors",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "database",
+        "name": "Database connection pool",
+        "value": "saturated"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "HTTP 5xx error rate",
+        "value": "elevated"
+      }
+    ]
+  },
+  {
+    "id": "database-003",
+    "expected": "Dependency or database degradation",
+    "summary": "Aurora degraded",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "database",
+        "name": "Aurora database health",
+        "value": "degraded"
+      }
+    ]
+  },
+  {
+    "id": "database-004",
+    "expected": "Dependency or database degradation",
+    "summary": "SQL timeout",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "database",
+        "name": "SQL query latency",
+        "value": "timeout"
+      }
+    ]
+  },
+  {
+    "id": "dependency-001",
+    "expected": "Dependency or database degradation",
+    "summary": "Upstream unavailable",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependencies",
+        "name": "Upstream dependency",
+        "value": "unavailable"
+      }
+    ]
+  },
+  {
+    "id": "dependency-002",
+    "expected": "Dependency or database degradation",
+    "summary": "Payment service failure",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependencies",
+        "name": "Payment service dependency",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "dependency-003",
+    "expected": "Dependency or database degradation",
+    "summary": "Third party degraded",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependencies",
+        "name": "Third-party dependency",
+        "value": "degraded"
+      }
+    ]
+  },
+  {
+    "id": "dependency-004",
+    "expected": "Dependency or database degradation",
+    "summary": "External service timeout",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependencies",
+        "name": "External service",
+        "value": "timeout"
+      }
+    ]
+  },
+  {
+    "id": "insufficient-001",
+    "expected": "Insufficient evidence",
+    "summary": "Generic alert only",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "fired"
+      }
+    ]
+  },
+  {
+    "id": "insufficient-002",
+    "expected": "Insufficient evidence",
+    "summary": "No signals",
+    "signals": []
+  },
+  {
+    "id": "insufficient-003",
+    "expected": "Insufficient evidence",
+    "summary": "Healthy components",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "database",
+        "name": "Database health",
+        "value": "healthy and connected"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "dependencies",
+        "name": "Payment service dependency",
+        "value": "operational"
+      }
+    ]
+  },
+  {
+    "id": "insufficient-004",
+    "expected": "Insufficient evidence",
+    "summary": "Errors without causal evidence",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "metrics",
+        "name": "HTTP 5xx error rate",
+        "value": "elevated"
+      }
+    ]
+  },
+  {
+    "id": "insufficient-005",
+    "expected": "Insufficient evidence",
+    "summary": "Release without observed symptoms",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v3 deployed"
+      }
+    ]
+  },
+  {
+    "id": "insufficient-006",
+    "expected": "Insufficient evidence",
+    "summary": "Competing database and deployment clues",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Release rollout",
+        "value": "v2 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "HTTP 5xx error rate",
+        "value": "elevated"
+      },
+      {
+        "timestamp": "10:02",
+        "source": "database",
+        "name": "Database connection",
+        "value": "failed timeout"
+      }
+    ]
+  }
+]
