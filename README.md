@@ -2,6 +2,8 @@
 
 Evidence-grounded incident diagnosis for startups and small engineering teams.
 
+> Prototype status: local, synthetic data only. Not for production use.
+
 The first milestone is a local, reproducible deployment-failure scenario. The tool inspects structured incident evidence, ranks root-cause hypotheses, and shows which signals support each hypothesis. It does not connect to production systems or execute remediation.
 
 ## Status
