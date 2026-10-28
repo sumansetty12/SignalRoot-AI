@@ -1,0 +1,42 @@
+{
+  "incident_id": "demo-deployment-regression-001",
+  "summary": "HTTP 5xx errors and API latency rose shortly after a new application release.",
+  "expected_cause": "deployment_regression",
+  "signals": [
+    {
+      "timestamp": "2026-01-15T09:55:00Z",
+      "source": "release_system",
+      "name": "deployment",
+      "value": "release v1.8.2 completed",
+      "note": "New version deployed to the demo service"
+    },
+    {
+      "timestamp": "2026-01-15T10:00:00Z",
+      "source": "metrics",
+      "name": "HTTP 5xx error rate",
+      "value": "increased from 0.2% to 8.7%",
+      "note": "Increase begins five minutes after release"
+    },
+    {
+      "timestamp": "2026-01-15T10:01:00Z",
+      "source": "metrics",
+      "name": "API p95 latency",
+      "value": "increased from 180 ms to 2400 ms",
+      "note": "Latency increased during the same period"
+    },
+    {
+      "timestamp": "2026-01-15T10:02:00Z",
+      "source": "application_log",
+      "name": "request_handler_error",
+      "value": "TypeError: cannot read property 'id' of undefined",
+      "note": "Repeated stack trace appears after release"
+    },
+    {
+      "timestamp": "2026-01-15T10:03:00Z",
+      "source": "dependency_health",
+      "name": "database connectivity",
+      "value": "healthy",
+      "note": "No observed connection errors in this fixture"
+    }
+  ]
+}
