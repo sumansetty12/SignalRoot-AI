@@ -1,0 +1,7 @@
+{
+  "version": "0.5.0",
+  "cases": 30,
+  "sha256": "0a8948747a572e44c559a1bab916538fa58394e43a22b2abb4263e34f5a7e2ae",
+  "provenance": "Developer-authored synthetic challenge set. NOT independent or external, NOT a real-world estimate.",
+  "label_policy": "Causes require explicit component failure or release+application symptom; contradictory, isolated, or non-diagnostic signals map to Insufficient evidence."
+}

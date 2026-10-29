@@ -1,15 +1,14 @@
-# SignalRoot AI — v0.4.0
+# SignalRoot AI — v0.5.0
 
 **Understand incidents. Find root causes. Restore reliability.**
 
-Read-only research prototype for incident diagnosis. The original **v0.3.0 heuristic diagnosis** is preserved at `POST /diagnose`; a separate **optional live LLM-powered analysis** is available at `POST /diagnose/ai`.
+Read-only research prototype. **Preserves the entire v0.4.0 baseline and optional AI endpoint**, and introduces a **separate synthetic challenge dataset** with transparent safety-oriented evaluation metrics.
 
-> The AI model is not included in the ZIP. Live AI calls require **your own API key**, internet access, and may incur API charges. You can run all 28 tests and the baseline evaluation without a key. The tests mock model responses; they do not establish AI diagnostic accuracy.
+> **Important:** The 30 new challenge scenarios are written by the project developer; they have not been independently labeled and are **not** proof of real-world diagnosis accuracy. Live LLM performance has **not** been measured unless you explicitly configure and run the live test yourself. This ZIP does not include an AI model or an API key.
 
-## Windows PowerShell quick start
+## Windows setup (extract into separate folder first)
 
-1. Extract the ZIP and open `SignalRoot-AI` in VS Code, with the terminal in that folder.
-2. Run:
+Open VS Code terminal in the extracted `SignalRoot-AI` folder:
 
 ```powershell
 py -m venv .venv
@@ -17,63 +16,47 @@ py -m venv .venv
 python -m pip install -r requirements.txt
 python -m pytest -v
 python benchmark\run_benchmark.py
-python benchmark\evaluate.py
+python benchmark\evaluate.py --engine baseline
+python benchmark\challenge_eval.py --engine baseline
 uvicorn app:app --reload
 ```
 
-If activation is blocked, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`, then retry activation. Open <http://127.0.0.1:8000/docs> for the API interface. `GET /incident` returns a synthetic incident you can copy into `POST /diagnose`.
+If PowerShell blocks activation: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` then activate again. Open <http://127.0.0.1:8000/docs>. Stop with `Ctrl+C`.
 
-## Optional: enable a live AI call
+The last baseline command creates a `benchmark/challenge_report_baseline.json` report (ignored by Git). It prints **accuracy, coverage, selective accuracy, abstention rate, incorrect confident diagnoses, per-label accuracy and confusion matrix.** The challenge dataset has a SHA-256 manifest to detect unreviewed edits.
 
-**Do not send employer data, real production logs, personal information, credentials or customer details. Only use synthetic test incidents.** Data entered in `/diagnose/ai` is transmitted to the API provider. Review API billing and data processing terms before enabling.
+## Optional live AI evaluation — paid, NOT required
 
-In your current PowerShell session, set environment variables (do not add keys to source files or Git):
+Only use synthetic cases. Real incident logs may disclose confidential information to the API provider. API billing and quota are separate from ChatGPT subscription.
 
-```powershell
-$env:OPENAI_API_KEY = "<your API key>"
-$env:SIGNALROOT_MODEL = "gpt-4o-mini"
-```
-
-Then use `POST /diagnose/ai` in `/docs` with synthetic inputs. This is an example model name; use a model with Chat Completions JSON-object support available to your API account. **A ChatGPT subscription does not automatically include API usage.** The model call may fail if your account lacks API access, quota, or a compatible model.
-
-To disable live calls: `Remove-Item Env:OPENAI_API_KEY`.
-
-## Architecture
-
-- `app.py`: unchanged v0.3.0 `diagnose()` heuristic baseline, plus a new endpoint.
-- `ai_engine.py`: explicit evidence IDs, fixed prompt, optional API call, validation, and fail-closed abstention.
-- `tests/test_diagnosis.py`: the original 13 baseline tests.
-- `tests/test_ai_engine.py`: deterministic unit tests using fake model responses (no external calls).
-- `benchmark/run_benchmark.py`: original 18-case synthetic baseline benchmark.
-- `benchmark/evaluate.py`: configurable evaluator for baseline or live AI; writes separate report files.
-- `benchmark/development_cases.json`: separate *developer-authored* development cases, not a held-out independent benchmark.
-
-## API
-
-- `GET /health` — app version and status
-- `GET /incident` — example synthetic incident
-- `POST /diagnose` — baseline, offline, free
-- `POST /diagnose/ai` — optional live LLM, needs API key
-
-The AI endpoint returns one of three labels: `Deployment regression`, `Dependency or database degradation`, or `Insufficient evidence`. It also returns evidence IDs citing input signals and read-only next steps. Invalid hallucinated IDs, unsupported labels, and remediation recommendations cause abstention. A provider outage is reported as an error, not miscounted as a diagnosis.
-
-## Evaluate research progress
-
-Offline, without API key:
+In PowerShell, set the key *only* in your current session:
 
 ```powershell
-python benchmark\run_benchmark.py
-python benchmark\evaluate.py --engine baseline
+$env:OPENAI_API_KEY = '<your API key>'
+$env:SIGNALROOT_MODEL = 'gpt-4o-mini'
 ```
 
-Optional paid live comparison (after configuring API key):
+**Live AI evaluation is deliberately locked** unless you supply `--allow-live-ai`. It can issue external paid API calls; the challenge set has 29 cases with signals, so the default 10-call cap intentionally blocks the full run. To run the full set, explicitly raise the cap:
 
 ```powershell
-python benchmark\evaluate.py --engine ai
+python benchmark\challenge_eval.py --engine compare --allow-live-ai --max-ai-calls 30
 ```
 
-Both evaluation files use **handwritten synthetic examples created by the developer**. They are useful for smoke testing, not proof of superior AI performance. Never claim the v0.3.0 baseline has been beaten until a larger pre-registered, independently labeled, blinded dataset has been used with fair baselines. The model's response is not guaranteed reproducible, even with temperature zero.
+This can use **up to 29 paid requests**; evaluate billing and usage limits first. The model must support Chat Completions and JSON-object mode. You can also test one synthetic incident in `POST /diagnose/ai` at `/docs` before doing a batch run. Provider failures are reported separately from abstentions. Model outputs are validated for evidence IDs, but this does not establish explanation correctness.
 
-## Safety limits
+`Remove-Item Env:OPENAI_API_KEY` removes the key from the current session.
 
-Read-only; no remediation execution. No system integrations. AI prompts and output are untrusted. Provider failures, invalid output, and unsupported evidence do not become confident diagnoses. Evidence IDs validate references, but **do not validate the factual correctness of the model's explanation**; human review is essential. This prototype is not production-ready.
+## Files and version boundaries
+
+- `app.py`: original rules-based diagnosis + optional `/diagnose/ai` endpoint; version only updated.
+- `ai_engine.py`: existing opt-in model adapter, evidence-ID checks, and fail-closed handling.
+- `benchmark/run_benchmark.py`: original 18 synthetic regression scenarios.
+- `benchmark/evaluate.py`: original 6 developer-authored development scenarios.
+- **`benchmark/challenge_cases.json`: 30 additional synthetic challenge scenarios with labeling rationales.**
+- **`benchmark/challenge_manifest.json`: SHA-256 fingerprint and labeling policy.**
+- **`benchmark/challenge_eval.py`: expanded offline/live comparative evaluator and metrics.**
+- **`tests/test_challenge_eval.py`: tests for manifest checks, metrics and safe evaluation.**
+
+## Research limitations and next step
+
+The new challenge set is still authored in the same project and not blinded. A credible research claim requires independently sourced incidents (appropriately anonymized), labeling by multiple external reviewers, pre-registered comparison methods, and tests of diagnosis correctness and evidence faithfulness. We should not adjust the frozen challenge labels to make model scores look better. This system does not perform remediation or production integrations.

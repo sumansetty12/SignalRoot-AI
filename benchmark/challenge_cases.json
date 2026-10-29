@@ -1,0 +1,505 @@
+[
+  {
+    "id": "challenge-deploy-01",
+    "summary": "Release followed by application 5xx",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "release",
+        "name": "Deployment rollout",
+        "value": "v7 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "application",
+        "name": "HTTP error rate",
+        "value": "elevated"
+      }
+    ],
+    "expected": "Deployment regression",
+    "label_rationale": "Release coincides with app error rate rise."
+  },
+  {
+    "id": "challenge-deploy-02",
+    "summary": "Release followed by latency",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "New version",
+        "value": "deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "Response time p95",
+        "value": "increased"
+      }
+    ],
+    "expected": "Deployment regression",
+    "label_rationale": "Release and independent latency deterioration."
+  },
+  {
+    "id": "challenge-deploy-03",
+    "summary": "Rollout and failed requests",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Rollout",
+        "value": "deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "Failed requests",
+        "value": "spiked"
+      }
+    ],
+    "expected": "Deployment regression",
+    "label_rationale": "Release and app request failures."
+  },
+  {
+    "id": "challenge-deploy-04",
+    "summary": "Deploy and HTTP server errors",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Deployment",
+        "value": "v9 started"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "Server errors",
+        "value": "increased"
+      }
+    ],
+    "expected": "Deployment regression",
+    "label_rationale": "Release and application failures."
+  },
+  {
+    "id": "challenge-deploy-05",
+    "summary": "Deployment and API 5xx with healthy database",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Deployment",
+        "value": "v10 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "HTTP 5xx",
+        "value": "elevated"
+      },
+      {
+        "timestamp": "10:02",
+        "source": "db",
+        "name": "Database health",
+        "value": "healthy"
+      }
+    ],
+    "expected": "Deployment regression",
+    "label_rationale": "Deployment plus errors with no database degradation observed."
+  },
+  {
+    "id": "challenge-deploy-06",
+    "summary": "Release followed by slow requests",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "release",
+        "name": "Release event",
+        "value": "v11 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "Response time",
+        "value": "slow"
+      }
+    ],
+    "expected": "Deployment regression",
+    "label_rationale": "Release and app slowdown."
+  },
+  {
+    "id": "challenge-db-01",
+    "summary": "Postgres connections failing",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "db",
+        "name": "Postgres connection",
+        "value": "failed"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Direct database connectivity failure."
+  },
+  {
+    "id": "challenge-db-02",
+    "summary": "Database pool exhausted",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "db",
+        "name": "Database connection pool",
+        "value": "exhausted"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Direct database resource exhaustion."
+  },
+  {
+    "id": "challenge-db-03",
+    "summary": "Aurora availability failure",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "rds",
+        "name": "Aurora database",
+        "value": "unavailable"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Direct database outage signal."
+  },
+  {
+    "id": "challenge-db-04",
+    "summary": "Database latency spike",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "db",
+        "name": "SQL query latency",
+        "value": "spiked"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Direct database degradation."
+  },
+  {
+    "id": "challenge-db-05",
+    "summary": "DB timeout and generic alert",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "db",
+        "name": "DB connection",
+        "value": "timeout"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "alerts",
+        "name": "Alert",
+        "value": "triggered"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Database timeout is diagnostic; alert is generic."
+  },
+  {
+    "id": "challenge-db-06",
+    "summary": "Unhealthy database and HTTP 5xx",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "db",
+        "name": "Database status",
+        "value": "unhealthy"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "metrics",
+        "name": "HTTP error rate",
+        "value": "elevated"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Database degradation is explicit; no release event."
+  },
+  {
+    "id": "challenge-dependency-01",
+    "summary": "Upstream is unavailable",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "upstream",
+        "name": "Upstream service",
+        "value": "unavailable"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Explicit upstream failure."
+  },
+  {
+    "id": "challenge-dependency-02",
+    "summary": "Third-party service degraded",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependency",
+        "name": "Third-party dependency",
+        "value": "degraded"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Direct upstream degradation."
+  },
+  {
+    "id": "challenge-dependency-03",
+    "summary": "Payment service failure",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "external",
+        "name": "Payment service",
+        "value": "failed"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Explicit dependency failure."
+  },
+  {
+    "id": "challenge-dependency-04",
+    "summary": "Identity service unavailable",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "external",
+        "name": "Identity service",
+        "value": "unavailable"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Explicit identity dependency outage."
+  },
+  {
+    "id": "challenge-dependency-05",
+    "summary": "External service timed out",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "upstream",
+        "name": "External service",
+        "value": "timeout"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Explicit upstream timeout."
+  },
+  {
+    "id": "challenge-dependency-06",
+    "summary": "Unhealthy dependency and slow app",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependency",
+        "name": "Dependency health",
+        "value": "unhealthy"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "Response time",
+        "value": "slow"
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "label_rationale": "Dependency degradation independently observed."
+  },
+  {
+    "id": "challenge-unknown-01",
+    "summary": "Only alert fired",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "monitor",
+        "name": "Alert",
+        "value": "triggered"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "No discriminating causal evidence."
+  },
+  {
+    "id": "challenge-unknown-02",
+    "summary": "No telemetry",
+    "signals": [],
+    "expected": "Insufficient evidence",
+    "label_rationale": "No telemetry."
+  },
+  {
+    "id": "challenge-unknown-03",
+    "summary": "Healthy database",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "db",
+        "name": "Database health",
+        "value": "healthy"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "Healthy signal is not an incident cause."
+  },
+  {
+    "id": "challenge-unknown-04",
+    "summary": "Errors without change events",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "api",
+        "name": "HTTP 5xx",
+        "value": "elevated"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "App symptom does not identify cause."
+  },
+  {
+    "id": "challenge-unknown-05",
+    "summary": "A release alone",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Deployment",
+        "value": "v2 deployed"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "Release occurrence alone is not evidence of regression."
+  },
+  {
+    "id": "challenge-unknown-06",
+    "summary": "Conflicting deployment and database failure",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Deployment",
+        "value": "v3 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "HTTP errors",
+        "value": "elevated"
+      },
+      {
+        "timestamp": "10:02",
+        "source": "db",
+        "name": "Database connection",
+        "value": "failed"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "Competing plausible causes; no clear discriminator."
+  },
+  {
+    "id": "challenge-unknown-07",
+    "summary": "Normal telemetry",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "metrics",
+        "name": "API latency",
+        "value": "normal"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "dependency",
+        "name": "Dependency health",
+        "value": "operational"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "No observed degradation."
+  },
+  {
+    "id": "challenge-unknown-08",
+    "summary": "Uninterpretable text",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "sys",
+        "name": "Misc note",
+        "value": "status update"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "No usable causal telemetry."
+  },
+  {
+    "id": "challenge-unknown-09",
+    "summary": "Release and healthy application",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Release",
+        "value": "v4 deployed"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "HTTP errors",
+        "value": "normal"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "No observed app degradation."
+  },
+  {
+    "id": "challenge-unknown-10",
+    "summary": "Generic workload spike",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "metrics",
+        "name": "Traffic",
+        "value": "high"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "Workload alone cannot establish one of the cause labels."
+  },
+  {
+    "id": "challenge-unknown-11",
+    "summary": "Healthy upstream and observed HTTP errors",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "dependency",
+        "name": "Upstream service",
+        "value": "operational"
+      },
+      {
+        "timestamp": "10:01",
+        "source": "api",
+        "name": "HTTP error rate",
+        "value": "elevated"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "Cause unknown even with a symptom."
+  },
+  {
+    "id": "challenge-unknown-12",
+    "summary": "No diagnosis from deployment timeline only",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "deployments",
+        "name": "Rollout",
+        "value": "finished"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "label_rationale": "Timeline event without failure correlation."
+  }
+]
