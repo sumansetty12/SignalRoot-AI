@@ -1,4 +1,4 @@
-# SignalRoot AI — v0.5.0
+# SignalRoot AI — v0.5.1 (Visualization UI)
 
 **Understand incidents. Find root causes. Restore reliability.**
 
@@ -21,7 +21,7 @@ python benchmark\challenge_eval.py --engine baseline
 uvicorn app:app --reload
 ```
 
-If PowerShell blocks activation: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` then activate again. Open <http://127.0.0.1:8000/docs>. Stop with `Ctrl+C`.
+If PowerShell blocks activation: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` then activate again. Open **<http://127.0.0.1:8000/dashboard>** for the new visualization dashboard. Open <http://127.0.0.1:8000/docs> for API testing. Stop with `Ctrl+C`.
 
 The last baseline command creates a `benchmark/challenge_report_baseline.json` report (ignored by Git). It prints **accuracy, coverage, selective accuracy, abstention rate, incorrect confident diagnoses, per-label accuracy and confusion matrix.** The challenge dataset has a SHA-256 manifest to detect unreviewed edits.
 
@@ -60,3 +60,16 @@ This can use **up to 29 paid requests**; evaluate billing and usage limits first
 ## Research limitations and next step
 
 The new challenge set is still authored in the same project and not blinded. A credible research claim requires independently sourced incidents (appropriately anonymized), labeling by multiple external reviewers, pre-registered comparison methods, and tests of diagnosis correctness and evidence faithfulness. We should not adjust the frozen challenge labels to make model scores look better. This system does not perform remediation or production integrations.
+
+
+## New in v0.5.1 — Offline visualization dashboard
+
+Open **http://127.0.0.1:8000/dashboard** while `uvicorn app:app --reload` is running.
+
+- Incident Explorer: search/filter 30 synthetic challenge cases, inspect event timelines and labels.
+- Diagnosis details: ranked hypothesis scores, supporting/counterevidence, safe investigative steps.
+- Evaluation: visual distributions, top-1 accuracy, coverage, abstention, confusion matrix and per-label accuracy.
+- Incident Playground: paste synthetic incident JSON and run the existing local `/diagnose` endpoint.
+- Read-only and offline: the UI itself does not issue live AI calls and requires no API key.
+
+Note: this dashboard is a development visualizer, **not** a live event monitor. All displayed challenge incidents are synthetic and are not streamed from Datadog, production logs, or other systems. It does not display live AI evaluation results.

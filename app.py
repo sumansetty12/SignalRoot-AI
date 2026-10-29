@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="SignalRoot AI", version="0.5.0",
+app = FastAPI(title="SignalRoot AI", version="0.5.1",
               description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
@@ -175,3 +175,40 @@ def diagnose_ai_endpoint(incident: Incident):
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=413, detail=str(exc)) from exc
+
+
+# Offline, read-only visualization endpoints. No external APIs or keys needed.
+from pathlib import Path as _Path
+from fastapi.responses import FileResponse
+import json as _json
+
+_UI_ROOT = _Path(__file__).resolve().parent
+
+@app.get('/dashboard', include_in_schema=False)
+def dashboard():
+    return FileResponse(_UI_ROOT / 'dashboard' / 'index.html', media_type='text/html')
+
+@app.get('/api/dashboard/cases')
+def dashboard_cases():
+    """Expose synthetic challenge cases and baseline diagnoses, without model calls."""
+    from benchmark.challenge_eval import validate_dataset, DATASET, MANIFEST
+    cases, digest = validate_dataset(DATASET, MANIFEST)
+    output = []
+    for c in cases:
+        pred = diagnose(Incident(incident_id=c['id'], summary=c['summary'], signals=c['signals']))
+        output.append({
+            'id': c['id'], 'summary': c['summary'], 'signals': c['signals'],
+            'expected': c['expected'], 'label_rationale': c.get('label_rationale', ''),
+            'prediction': pred, 'correct': pred['diagnosis'] == c['expected']
+        })
+    return {'source': 'Developer-authored synthetic challenge set (not independently validated)',
+            'engine': 'rules_baseline', 'dataset_sha256': digest, 'cases': output}
+
+@app.get('/api/dashboard/metrics')
+def dashboard_metrics():
+    from benchmark.challenge_eval import validate_dataset, DATASET, MANIFEST, evaluate
+    cases, digest = validate_dataset(DATASET, MANIFEST)
+    results = evaluate(cases, engine='baseline')
+    return {'source': 'Synthetic developer-authored challenge benchmark',
+            'dataset_sha256': digest, 'engine': 'rules_baseline', 'metrics': results['metrics'],
+            'rows': results['rows'], 'warning': results['warning']}
