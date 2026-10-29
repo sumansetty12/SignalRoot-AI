@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="SignalRoot AI", version="0.3.0",
+app = FastAPI(title="SignalRoot AI", version="0.4.0",
               description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
@@ -162,3 +162,16 @@ def index():
     <a href='/incident'>Example incident</a></p>
     <p>This is a read-only heuristic research prototype using synthetic incident data.</p>
     </body></html>"""
+
+
+@app.post("/diagnose/ai")
+def diagnose_ai_endpoint(incident: Incident):
+    """Optional live LLM call. Sends user-supplied synthetic telemetry to provider."""
+    from fastapi import HTTPException
+    from ai_engine import ProviderError, analyze_ai
+    try:
+        return analyze_ai(incident)
+    except ProviderError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=413, detail=str(exc)) from exc

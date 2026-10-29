@@ -1,0 +1,91 @@
+[
+  {
+    "id": "dev-deploy-01",
+    "summary": "Release followed by HTTP errors",
+    "expected": "Deployment regression",
+    "signals": [
+      {
+        "timestamp": "09:00",
+        "source": "deployments",
+        "name": "Release rollout",
+        "value": "v7 deployed"
+      },
+      {
+        "timestamp": "09:02",
+        "source": "metrics",
+        "name": "Server error rate",
+        "value": "elevated"
+      }
+    ]
+  },
+  {
+    "id": "dev-db-01",
+    "summary": "Database connection failure",
+    "expected": "Dependency or database degradation",
+    "signals": [
+      {
+        "timestamp": "10:00",
+        "source": "database",
+        "name": "Postgres connection",
+        "value": "failed"
+      }
+    ]
+  },
+  {
+    "id": "dev-upstream-01",
+    "summary": "Upstream outage",
+    "expected": "Dependency or database degradation",
+    "signals": [
+      {
+        "timestamp": "11:00",
+        "source": "dependencies",
+        "name": "Payment service dependency",
+        "value": "unavailable"
+      }
+    ]
+  },
+  {
+    "id": "dev-empty-01",
+    "summary": "No observability",
+    "expected": "Insufficient evidence",
+    "signals": []
+  },
+  {
+    "id": "dev-alert-01",
+    "summary": "One generic alert",
+    "expected": "Insufficient evidence",
+    "signals": [
+      {
+        "timestamp": "12:00",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "fired"
+      }
+    ]
+  },
+  {
+    "id": "dev-conflict-01",
+    "summary": "Release and failing database simultaneously",
+    "expected": "Insufficient evidence",
+    "signals": [
+      {
+        "timestamp": "13:00",
+        "source": "deployments",
+        "name": "Release rollout",
+        "value": "v8 deployed"
+      },
+      {
+        "timestamp": "13:01",
+        "source": "metrics",
+        "name": "HTTP 5xx error rate",
+        "value": "elevated"
+      },
+      {
+        "timestamp": "13:02",
+        "source": "database",
+        "name": "Database connections",
+        "value": "failed"
+      }
+    ]
+  }
+]
