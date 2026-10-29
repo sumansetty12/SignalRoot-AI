@@ -1,75 +1,50 @@
-# SignalRoot AI — v0.5.1 (Visualization UI)
+# SignalRoot AI v0.6.0 — AWS Read-Only Incident Explorer
 
-**Understand incidents. Find root causes. Restore reliability.**
+SignalRoot AI is a research prototype for evidence-grounded incident investigation. v0.6.0 adds **manual, read-only AWS snapshot retrieval** for CloudWatch ALARM states and recent RDS instance events, alongside the existing incident dashboard and synthetic evaluations.
 
-Read-only research prototype. **Preserves the entire v0.4.0 baseline and optional AI endpoint**, and introduces a **separate synthetic challenge dataset** with transparent safety-oriented evaluation metrics.
+**This is not always-on monitoring or validated root-cause analysis.** AWS events may be incomplete, benign, or historical. The app does not run autonomous remediation, access CloudWatch Logs, or pull time-series metrics. A local browser app should **never** be exposed publicly without authentication and network protections.
 
-> **Important:** The 30 new challenge scenarios are written by the project developer; they have not been independently labeled and are **not** proof of real-world diagnosis accuracy. Live LLM performance has **not** been measured unless you explicitly configure and run the live test yourself. This ZIP does not include an AI model or an API key.
+## Quick start — demo, no AWS account required
 
-## Windows setup (extract into separate folder first)
-
-Open VS Code terminal in the extracted `SignalRoot-AI` folder:
+Windows PowerShell from the `SignalRoot-AI` folder:
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python -m pytest -v
-python benchmark\run_benchmark.py
-python benchmark\evaluate.py --engine baseline
-python benchmark\challenge_eval.py --engine baseline
-uvicorn app:app --reload
+uvicorn app:app --reload --host 127.0.0.1 --port 8001
 ```
 
-If PowerShell blocks activation: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` then activate again. Open **<http://127.0.0.1:8000/dashboard>** for the new visualization dashboard. Open <http://127.0.0.1:8000/docs> for API testing. Stop with `Ctrl+C`.
+Open `http://127.0.0.1:8001/dashboard`, select **AWS Explorer** and click **Load demo events**. This returns clearly marked synthetic AWS alarm and RDS event data without AWS access. Existing Incident Explorer, Evaluation, Playground and API `/docs` remain available.
 
-The last baseline command creates a `benchmark/challenge_report_baseline.json` report (ignored by Git). It prints **accuracy, coverage, selective accuracy, abstention rate, incorrect confident diagnoses, per-label accuracy and confusion matrix.** The challenge dataset has a SHA-256 manifest to detect unreviewed edits.
+## Optional: scan your own AWS sandbox account (read-only)
 
-## Optional live AI evaluation — paid, NOT required
-
-Only use synthetic cases. Real incident logs may disclose confidential information to the API provider. API billing and quota are separate from ChatGPT subscription.
-
-In PowerShell, set the key *only* in your current session:
+1. In your own AWS sandbox account, prepare a narrowly scoped IAM **role** with the supplied [`aws_readonly_policy.json`](aws_readonly_policy.json). That policy allows `cloudwatch:DescribeAlarms` and `rds:DescribeEvents` only. You should review its trust policy and limit who can assume it. AWS often requires Resource `*` for these Describe operations.
+2. Configure AWS CLI authentication locally with an SSO profile or temporary credentials. **Never** enter access keys in this app or commit `.env` files. Test with `aws sts get-caller-identity --profile signalroot-sandbox`. An existing temporary/session credential setup is preferable to permanent access keys.
+3. In a PowerShell session, set:
 
 ```powershell
-$env:OPENAI_API_KEY = '<your API key>'
-$env:SIGNALROOT_MODEL = 'gpt-4o-mini'
+$env:SIGNALROOT_AWS_ENABLED="1"
+$env:SIGNALROOT_AWS_REGION="us-east-1"  # your sandbox region
+$env:AWS_PROFILE="signalroot-sandbox"   # your configured profile
+# If cross-account AssumeRole is needed, supply a trusted role ARN and unique ExternalId:
+# $env:SIGNALROOT_AWS_ROLE_ARN="arn:aws:iam::123456789012:role/SignalRootReadOnly"
+# $env:SIGNALROOT_AWS_EXTERNAL_ID="unique-generated-external-id"
+uvicorn app:app --reload --host 127.0.0.1 --port 8001
 ```
 
-**Live AI evaluation is deliberately locked** unless you supply `--allow-live-ai`. It can issue external paid API calls; the challenge set has 29 cases with signals, so the default 10-call cap intentionally blocks the full run. To run the full set, explicitly raise the cap:
+4. In **AWS Explorer**, click **Scan AWS (read-only)**. The scan returns a **point-in-time snapshot**, not real-time continuous detection. It reads at most **30 ALARM-state CloudWatch alarms** and **40 RDS DB-instance events from the last 60 minutes** for a **single region**. Alarms that are OK/INSUFFICIENT_DATA are excluded. RDS cluster event sources are not covered. If no alarms or events exist, the dashboard correctly shows an empty snapshot.
+5. To disable AWS access, stop the server and set `$env:SIGNALROOT_AWS_ENABLED="0"` before restarting. No AWS credentials or raw event descriptions are returned to the browser or saved by this app.
 
-```powershell
-python benchmark\challenge_eval.py --engine compare --allow-live-ai --max-ai-calls 30
-```
+**Important limits:** AWS may bill for some monitoring usage and API requests; review your account and current AWS pricing. The app does not create AWS infrastructure. Scan does not fetch log bodies or metric time series; a single alarm is not proof of outage or root cause. No background poller or automatic incident notification is enabled. Profile-based auth works from your local computer only. For a future hosted, multi-tenant service we will need proper tenant authorization, secure role onboarding, encryption, audit logs, retention policies and rate limiting.
 
-This can use **up to 29 paid requests**; evaluate billing and usage limits first. The model must support Chat Completions and JSON-object mode. You can also test one synthetic incident in `POST /diagnose/ai` at `/docs` before doing a batch run. Provider failures are reported separately from abstentions. Model outputs are validated for evidence IDs, but this does not establish explanation correctness.
+## Code and API
 
-`Remove-Item Env:OPENAI_API_KEY` removes the key from the current session.
+- `GET /api/aws/status`: whether live scan is enabled (without accessing AWS)
+- `GET /api/aws/demo`: synthetic AWS snapshot, no credentials
+- `POST /api/aws/scan`: manual read-only snapshot (disabled by default)
+- `GET /dashboard`: dashboard including AWS Explorer
+- Existing `/diagnose`, `/diagnose/ai`, synthetic benchmarks, tests preserved.
 
-## Files and version boundaries
-
-- `app.py`: original rules-based diagnosis + optional `/diagnose/ai` endpoint; version only updated.
-- `ai_engine.py`: existing opt-in model adapter, evidence-ID checks, and fail-closed handling.
-- `benchmark/run_benchmark.py`: original 18 synthetic regression scenarios.
-- `benchmark/evaluate.py`: original 6 developer-authored development scenarios.
-- **`benchmark/challenge_cases.json`: 30 additional synthetic challenge scenarios with labeling rationales.**
-- **`benchmark/challenge_manifest.json`: SHA-256 fingerprint and labeling policy.**
-- **`benchmark/challenge_eval.py`: expanded offline/live comparative evaluator and metrics.**
-- **`tests/test_challenge_eval.py`: tests for manifest checks, metrics and safe evaluation.**
-
-## Research limitations and next step
-
-The new challenge set is still authored in the same project and not blinded. A credible research claim requires independently sourced incidents (appropriately anonymized), labeling by multiple external reviewers, pre-registered comparison methods, and tests of diagnosis correctness and evidence faithfulness. We should not adjust the frozen challenge labels to make model scores look better. This system does not perform remediation or production integrations.
-
-
-## New in v0.5.1 — Offline visualization dashboard
-
-Open **http://127.0.0.1:8000/dashboard** while `uvicorn app:app --reload` is running.
-
-- Incident Explorer: search/filter 30 synthetic challenge cases, inspect event timelines and labels.
-- Diagnosis details: ranked hypothesis scores, supporting/counterevidence, safe investigative steps.
-- Evaluation: visual distributions, top-1 accuracy, coverage, abstention, confusion matrix and per-label accuracy.
-- Incident Playground: paste synthetic incident JSON and run the existing local `/diagnose` endpoint.
-- Read-only and offline: the UI itself does not issue live AI calls and requires no API key.
-
-Note: this dashboard is a development visualizer, **not** a live event monitor. All displayed challenge incidents are synthetic and are not streamed from Datadog, production logs, or other systems. It does not display live AI evaluation results.
+The current heuristic classifies hypotheses, not confirmed root causes; misleading evidence is possible. No data is sent to an LLM by the AWS scan. See `PROJECT.md` for limitations.

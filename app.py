@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="SignalRoot AI", version="0.5.1",
+app = FastAPI(title="SignalRoot AI", version="0.6.0",
               description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
@@ -212,3 +212,29 @@ def dashboard_metrics():
     return {'source': 'Synthetic developer-authored challenge benchmark',
             'dataset_sha256': digest, 'engine': 'rules_baseline', 'metrics': results['metrics'],
             'rows': results['rows'], 'warning': results['warning']}
+
+
+# v0.6.0: explicit, user-triggered, read-only AWS snapshot.
+from aws_integration import AWSIntegrationError, collect_aws_snapshot, demo_aws_snapshot
+from fastapi import HTTPException as _HTTPException
+
+@app.get('/api/aws/status')
+def aws_status():
+    import os
+    return {'enabled': os.environ.get('SIGNALROOT_AWS_ENABLED') == '1',
+            'mode': 'live_enabled' if os.environ.get('SIGNALROOT_AWS_ENABLED') == '1' else 'demo_only',
+            'manual_refresh_only': True, 'read_only': True}
+
+@app.get('/api/aws/demo')
+def aws_demo():
+    return demo_aws_snapshot(diagnose)
+
+@app.post('/api/aws/scan')
+def aws_scan():
+    import os
+    if os.environ.get('SIGNALROOT_AWS_ENABLED') != '1':
+        raise _HTTPException(403, detail='AWS access is disabled. Set SIGNALROOT_AWS_ENABLED=1 explicitly to enable.')
+    try:
+        return collect_aws_snapshot(diagnose)
+    except AWSIntegrationError as exc:
+        raise _HTTPException(503, detail=str(exc)) from exc
