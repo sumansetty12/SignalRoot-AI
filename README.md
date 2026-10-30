@@ -1,72 +1,63 @@
-# SignalRoot AI v0.7.0 — AWS investigation + optional live AI
+# SignalRoot AI v0.9.0 — combined automatic monitoring + pilot UX
 
-This release combines the **read-only AWS investigation** features and a separately enabled **live LLM comparison**. It is an experimental SRE research tool, **not** a production monitoring service or verified root-cause engine.
+Combines the proposed v0.8.0 and v0.9.0 work into **one local single-account pilot release**. It is **not a finished production SaaS**: no login, multi-tenant boundary, customer onboarding, hosted service, SLA, independent accuracy validation or production incident response support.
 
-## Start locally on Windows
-
-Unzip into its own folder. Open `SignalRoot-AI` in VS Code PowerShell:
+## Local installation (Windows PowerShell)
 
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 python -m pytest -v
-python benchmark\challenge_eval.py --engine baseline
-uvicorn app:app --reload --host 127.0.0.1 --port 8001
+uvicorn app:app --host 127.0.0.1 --port 8001
 ```
 
-Open `http://127.0.0.1:8001/dashboard` and use **AWS Explorer → Load demo events**. No AWS credentials or API key required.
+Open `http://127.0.0.1:8001/dashboard` and choose **Monitoring & History**. The existing Incident Explorer, AWS Explorer, benchmarks and AI endpoints remain available.
 
-## Connect your own AWS account (manual read-only scan)
+## Safe startup
 
-Use a *personal sandbox account* with SSO/temporary credentials and update your existing restricted IAM role using `aws_readonly_policy.json`. Account and permissions should be verified separately. The allowed actions are:
-
-- `cloudwatch:DescribeAlarms`, `cloudwatch:GetMetricStatistics`
-- `rds:DescribeEvents`
-- `ec2:DescribeInstances`, `ec2:DescribeInstanceStatus`
-- Optional `logs:FilterLogEvents`, scoped to `/signalroot-lab/*` log group ARNs
-
-PowerShell, in the **same terminal** where you start uvicorn:
+By default, automatic polling, AWS access, automatic AI and notifications are **all OFF**. To connect your existing personal AWS test account using your existing AWS CLI profile, set environment variables in the same PowerShell terminal before launching the server:
 
 ```powershell
-$env:AWS_PROFILE="signalroot-sandbox"  # change to your existing profile
+$env:AWS_PROFILE="signalroot-sandbox"  # replace with your configured AWS CLI profile
 $env:SIGNALROOT_AWS_ENABLED="1"
 $env:SIGNALROOT_AWS_REGION="us-east-2"
-# Optional, only if YOUR log group exists, and you trust its contents:
-# $env:SIGNALROOT_LOG_GROUPS="/signalroot-lab/app"
-uvicorn app:app --reload --host 127.0.0.1 --port 8001
+$env:SIGNALROOT_AUTO_MONITOR="1"
+$env:SIGNALROOT_POLL_SECONDS="300"
+uvicorn app:app --host 127.0.0.1 --port 8001
 ```
 
-Click **Scan AWS (read-only)**. It searches the last 180 minutes of RDS events, active metric alarms and selected lab EC2 instances, and reads a limited number of metric samples. RDS free-text event messages are parsed locally into **category flags only** (e.g. restart/failover); the raw messages are not sent to the browser. For configured log groups, at most 50 log events/group from the last 45 minutes are examined locally for error/timeout patterns; **only counts** appear in the UI. This is keyword pattern analysis, not log-based causality detection. The app does not retrieve CloudWatch alarm reasons/descriptions. If a read fails, the dashboard should show a warning and retain the base scan.
+The background worker starts only when both AWS and automatic monitoring are enabled, and polls on the interval after startup. Keep **one Uvicorn worker**, no multi-worker deployment or `--reload` during monitoring, or you risk duplicate scans. Scans are read-only but may incur CloudWatch costs. The process must stay running for polling to continue. Click **Run AWS scan & save** for an immediate one-time test.
 
-> Keep the app bound to `127.0.0.1`. There is no user authentication; **never expose it on a public IP**. Only use your own sandbox telemetry. Do not use employer/customer information or unknown sensitive log streams. Read-only does not mean zero cost: CloudWatch logs and AI calls can incur charges.
+An embedded SQLite database is created at `data/incidents.sqlite3`; it stores sanitized observations and scan summaries. `data/` is git-ignored. This is local test data, **not hardened at-rest encryption or a secure multi-user data store**. Limit local file permissions and never persist sensitive telemetry. History deduplicates identical event/time/resource observations. You can acknowledge them in the dashboard. Acknowledgement does not change AWS state.
 
-## Optional LIVE AI comparison — separate explicit opt-in
+## Notifications (optional)
 
-The old `/diagnose/ai` route remains. New AWS Explorer includes **Analyze first AWS window with AI**. The browser asks permission each time. Server-side enablement is **off** unless explicitly set.
+Set `SIGNALROOT_WEBHOOK_URL` to a trusted HTTPS webhook URL in your **local environment only**, not in Git. This sends only a minimal event category/notification message, not raw logs, but the URL itself may contain a secret. Notifications are best effort; repeated failures are not automatically retried. Automatic notifications are sent only for **newly observed** records from background polls.
 
-In your PowerShell terminal **before launching uvicorn**:
+## Optional automatic AI (PAID and opt-in)
+
+Requires ALL of `SIGNALROOT_AWS_AI_ENABLED=1`, `SIGNALROOT_AUTO_AI_ENABLED=1`, a locally configured `OPENAI_API_KEY`, and a positive `SIGNALROOT_DAILY_AI_LIMIT` (maximum 20). The default daily AI limit is **0**. Only *new* sanitized AWS observations are analyzed. The system reserves daily quota before making a request, so errors count toward the limit. Do not enable this with customer or confidential data. It is an experimental AI comparison, **not autonomous remediation**. Explicit manual AI analysis remains available in AWS Explorer separately.
 
 ```powershell
 $env:SIGNALROOT_AWS_AI_ENABLED="1"
-$env:OPENAI_API_KEY="YOUR_KEY_IN_YOUR_LOCAL_TERMINAL_ONLY"
-$env:SIGNALROOT_MODEL="gpt-4o-mini"   # optional; use a model your account can access
-uvicorn app:app --reload --host 127.0.0.1 --port 8001
+$env:SIGNALROOT_AUTO_AI_ENABLED="1"
+$env:SIGNALROOT_DAILY_AI_LIMIT="2"
+# Supply OPENAI_API_KEY via your local secret handling, never commit it.
 ```
 
-Click **AWS Explorer → Scan AWS → Analyze first AWS window with AI**. This performs a **paid external AI request**, not a local inference; your sanitized event signals and timestamps are sent to the provider. Never paste/share your API key, and never commit it to Git. Set `$env:SIGNALROOT_AWS_AI_ENABLED="0"` and remove the environment key afterward to disable.
+## Important boundaries
 
-The AI selects one of the existing three labels and is required to cite evidence IDs from the supplied input. Invalid outputs are rejected or converted to abstention. Evidence-ID validation prevents invented references, **not invented reasoning or factual inaccuracies**. The tool makes no AWS writes or remediation calls. Model performance on **real** AWS incidents has not been measured, and no guarantee of improved accuracy is made.
+- Bind only to `127.0.0.1`; ops endpoints have an additional localhost client-address check, **not authentication**. Never expose them through a public proxy or internet-facing host.
+- IAM access remains read-only; verify `aws_readonly_policy.json` and the profile/account before use. No automatic EC2/RDS modification is implemented.
+- Scope is one trusted test AWS account, local application, single worker and local SQLite. Commercial cross-account onboarding, identity, isolation, tenancy, audit logs, rate limiting, observability, secrets management, backup, billing, hosted deployment, alert reliability and external evaluation remain future work.
+- AWS records and time proximity do not prove cause and effect. Real AI tests and independent benchmark results are still pending.
+- Remove AWS test resources when not in use to avoid costs.
 
-## What is tested / not tested
+## Test commands
 
-- Python unit/API tests use **mock AWS and AI responses**, verifying safety gates, sanitization, basic functionality and backward compatibility.
-- The old 18-case and 30-case synthetic baseline benchmarks remain developer-authored and are **not independent evaluations**.
-- Run baseline evaluation without API charges: `python benchmark\evaluate.py --engine baseline`
-- Optional live AI evaluation on the **6-case developer set** (paid): `python benchmark\evaluate.py --engine ai`
-- For a stronger comparison, label a separate test set **before** evaluation, do not tune to that set, review model explanations, and report errors and costs.
-- A future production release still requires automatic monitoring, authenticated access, durable storage, tenant isolation, secrets management, and audited threat modelling.
-
-## Cleanup
-
-This app only reads AWS: it doesn't create or delete infrastructure. The **separate live AWS lab** is still chargeable. Delete its EC2/RDS/CloudWatch resources using the lab's own cleanup script after testing.
+```powershell
+python -m pytest -v
+python benchmark\run_benchmark.py
+python benchmark\challenge_eval.py --engine baseline
+```
