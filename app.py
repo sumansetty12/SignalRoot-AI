@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="SignalRoot AI", version="0.6.1",
+app = FastAPI(title="SignalRoot AI", version="0.9.0",
               description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
@@ -238,3 +238,80 @@ def aws_scan():
         return collect_aws_snapshot(diagnose)
     except AWSIntegrationError as exc:
         raise _HTTPException(503, detail=str(exc)) from exc
+
+
+# Explicit per-request live AI analysis; sends selected sanitized signals to the API provider.
+@app.post('/api/aws/analyze-window-ai')
+def aws_window_ai(incident: Incident):
+    import os
+    if os.environ.get('SIGNALROOT_AWS_AI_ENABLED') != '1':
+        raise _HTTPException(403, detail='Live AI is disabled. Explicitly set SIGNALROOT_AWS_AI_ENABLED=1 to opt in.')
+    if len(incident.signals)>40:
+        raise _HTTPException(413, detail='Too many signals.')
+    if any(s.source not in ('rds','cloudwatch','ec2','metrics') for s in incident.signals):
+        raise _HTTPException(400, detail='Only sanitized AWS signal sources are permitted.')
+    from ai_engine import analyze_ai, ProviderError
+    try:
+        return {'baseline':diagnose(incident),'ai':analyze_ai(incident),
+                'notice':'This call sends the supplied sanitized observations to the model provider. Hypotheses are not verified root causes.'}
+    except ProviderError as exc:
+        raise _HTTPException(503,detail=str(exc)) from exc
+    except ValueError as exc:
+        raise _HTTPException(400,detail=str(exc)) from exc
+
+
+# v0.9.0: opt-in scheduled read-only scans and local incident history.
+# Localhost-only endpoints are NOT an authorization system for public deployments.
+from fastapi import Request as _Request
+from operations import (start as _start_poller, stop as _stop_poller,
+                        scan_once as _scan_once, summary as _ops_summary,
+                        history as _ops_history, detail as _ops_detail,
+                        acknowledge as _ops_acknowledge)
+
+@app.on_event('startup')
+def _start_automation():
+    _start_poller()
+
+@app.on_event('shutdown')
+def _stop_automation():
+    _stop_poller()
+
+def _local_only(request: _Request):
+    # Reject browser cross-origin calls, including cross-site form POSTs.
+    origin = request.headers.get('origin')
+    if origin and origin != str(request.base_url).rstrip('/'):
+        raise _HTTPException(403, detail='Cross-origin operations request blocked')
+    if not request.client or request.client.host not in ('127.0.0.1', '::1', 'testclient'):
+        raise _HTTPException(403, detail='Pilot operations API is localhost only')
+
+@app.get('/api/ops/status')
+def ops_status(request: _Request):
+    _local_only(request)
+    return _ops_summary()
+
+@app.get('/api/ops/history')
+def ops_history(request: _Request, limit: int = 50, unacknowledged_only: bool = False):
+    _local_only(request)
+    return {'items': _ops_history(limit, unacknowledged_only)}
+
+@app.get('/api/ops/history/{fingerprint}')
+def ops_detail(request: _Request, fingerprint: str):
+    _local_only(request)
+    result=_ops_detail(fingerprint)
+    if result is None: raise _HTTPException(404, detail='Observation not found')
+    return result
+
+@app.post('/api/ops/history/{fingerprint}/acknowledge')
+def ops_acknowledge(request: _Request, fingerprint: str):
+    _local_only(request)
+    if not _ops_acknowledge(fingerprint): raise _HTTPException(404, detail='Observation not found')
+    return {'acknowledged': True}
+
+@app.post('/api/ops/scan-now')
+def ops_scan_now(request: _Request):
+    _local_only(request)
+    try:
+        # Manually triggered scans collect but DO NOT trigger automatic paid AI.
+        return _scan_once(send_notifications=False, auto_ai=False)
+    except Exception as exc:
+        raise _HTTPException(503, detail=str(exc)[:250]) from exc

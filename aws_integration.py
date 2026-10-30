@@ -9,6 +9,7 @@ import os
 import re
 from datetime import datetime, timedelta, timezone
 from typing import Callable
+import advanced_investigation as advanced
 
 REGION_RE = re.compile(r"^[a-z]{2}(?:-gov)?-[a-z]+-\d$")
 ARN_RE = re.compile(r"^arn:(?:aws|aws-us-gov|aws-cn):iam::\d{12}:role/[a-zA-Z0-9+=,.@_/-]+$")
@@ -151,7 +152,7 @@ def collect_aws_snapshot(diagnose_fn):
         resp = rds.describe_events(SourceType='db-instance',Duration=EVENT_WINDOW_MINUTES,MaxRecords=MAX_EVENTS)
         events=resp.get('Events',[])[:MAX_EVENTS]
         snapshot = _snapshot(alarms,events,diagnose_fn,mode='aws_read_only_snapshot',region=region)
-        return enrich_snapshot(snapshot, cw, session, opts, alarms, region, diagnose_fn)
+        return enrich_snapshot(snapshot, cw, session, opts, alarms, region, diagnose_fn, raw_rds_events=events)
     except Exception as exc:
         raise AWSIntegrationError(f'AWS read failed ({type(exc).__name__}). Check CloudWatch/RDS read permissions and AWS region.') from None
 
@@ -197,7 +198,7 @@ def _ec2_records(session, opts, region):
             tags=inst.get('Tags',[])
             name=next((str(t.get('Value',''))[:80] for t in tags if t.get('Key')=='Name'), 'signalroot-lab-ec2')
             if not name.startswith('signalroot-lab'):continue
-            records.append({'name':name,'state':state,'observed_at':datetime.now(timezone.utc).isoformat()})
+            records.append({'instance_id':inst.get('InstanceId'),'name':name,'state':state,'observed_at':datetime.now(timezone.utc).isoformat()})
     return records
 
 
@@ -228,7 +229,7 @@ def correlate_observations(incidents, window_minutes=20):
     return groups
 
 
-def enrich_snapshot(snapshot, cw, session, opts, alarms, region, diagnose_fn):
+def enrich_snapshot(snapshot, cw, session, opts, alarms, region, diagnose_fn, raw_rds_events=None):
     warnings=[]
     alarm_records=[c for c in snapshot['incidents'] if c['kind']=='CloudWatch alarm']
     for incident, alarm in zip(alarm_records[:MAX_METRIC_ALARMS], alarms[:MAX_METRIC_ALARMS]):
@@ -244,11 +245,17 @@ def enrich_snapshot(snapshot, cw, session, opts, alarms, region, diagnose_fn):
     # EC2 is limited to resources explicitly named signalroot-lab*.
     try:
         instances=_ec2_records(session,opts,region)
+        try:
+            statuses=advanced.ec2_instance_health(session,opts,instances)
+        except Exception:
+            statuses=[]
+            warnings.append('EC2 health status read unavailable; check ec2:DescribeInstanceStatus permission.')
         for i, instance in enumerate(instances):
             timestamp=instance['observed_at']
             state=instance['state']
             record={'id':f'aws-ec2-{i+1}','kind':'EC2 status','observed_at':timestamp,
                'summary':f'EC2 instance state: {state}', 'resource':instance['name'],
+               'ec2_health': statuses[i] if i < len(statuses) else None,
                'signals':[{'timestamp':timestamp,'source':'ec2','name':'EC2 instance state',
                            'value':state,'note':'Snapshot status only; no root cause inferred.'}]}
             snapshot['incidents'].append(_diagnose_record(diagnose_fn,record))
@@ -256,11 +263,29 @@ def enrich_snapshot(snapshot, cw, session, opts, alarms, region, diagnose_fn):
     except Exception:
         snapshot['counts']['ec2_instances']=0
         warnings.append('EC2 status read unavailable; check ec2:DescribeInstances permission.')
+    # Sanitized RDS message indicators; never retain AWS's raw Message value.
+    for record, raw in zip((x for x in snapshot['incidents'] if x['kind']=='RDS event'), raw_rds_events or []):
+        indicators=advanced.sanitize_rds_event(raw)
+        record['rds_indicators']=indicators
+        signal=advanced.sanitized_rds_signal(raw)
+        if signal:
+            record['signals'].append(signal)
+            # Reevaluate with newly observed classification (not necessarily a root cause).
+            record['prediction']=_diagnose_record(diagnose_fn,record)['prediction']
+    # Optional logs: only bounded pattern counts for explicit allowlisted test groups.
+    try:
+        snapshot['log_pattern_summary']=advanced.read_logs(session,opts)
+    except Exception:
+        snapshot['log_pattern_summary']={'enabled':bool(os.getenv('SIGNALROOT_LOG_GROUPS')),
+            'groups_scanned':0,'summaries':[], 'note':'Log pattern read unavailable; verify allowlist and logs permissions.'}
+        if os.getenv('SIGNALROOT_LOG_GROUPS'):
+            warnings.append('CloudWatch log pattern inspection unavailable.')
     snapshot['counts']['incidents']=len(snapshot['incidents'])
     snapshot['correlation_windows']=correlate_observations(snapshot['incidents'])
+    snapshot['investigations']=[advanced.analyze_window(w,snapshot['incidents']) for w in snapshot['correlation_windows']]
     snapshot['collection_notes']=warnings
     snapshot['metric_window_minutes']=45
     snapshot['rds_event_window_minutes']=EVENT_WINDOW_MINUTES
     snapshot['warning']=('Observed states, numeric metric samples, and time proximity are not confirmed root causes. '
-                         'Raw RDS messages, alarm descriptions, application logs, and secrets are not collected.')
+                         'RDS messages are classified into limited keywords; raw RDS messages, raw log lines, descriptions, and secrets are never exposed. Log pattern summaries require explicit allowlisting.')
     return snapshot

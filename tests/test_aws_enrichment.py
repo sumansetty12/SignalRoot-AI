@@ -45,7 +45,7 @@ def test_correlation_never_asserts_root_cause():
 def test_existing_aws_endpoint_unchanged():
     client=TestClient(app)
     assert client.get('/api/aws/demo').status_code==200
-    assert client.get('/health').json()['version']=='0.6.1'
+    assert client.get('/health').json()['version']=='0.9.0'
     assert 'Correlated event windows' in client.get('/dashboard').text
 
 def test_optional_failures_do_not_abort_snapshot():
