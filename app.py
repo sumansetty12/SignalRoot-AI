@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="SignalRoot AI", version="0.6.1",
+app = FastAPI(title="SignalRoot AI", version="0.7.0",
               description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
@@ -238,3 +238,23 @@ def aws_scan():
         return collect_aws_snapshot(diagnose)
     except AWSIntegrationError as exc:
         raise _HTTPException(503, detail=str(exc)) from exc
+
+
+# Explicit per-request live AI analysis; sends selected sanitized signals to the API provider.
+@app.post('/api/aws/analyze-window-ai')
+def aws_window_ai(incident: Incident):
+    import os
+    if os.environ.get('SIGNALROOT_AWS_AI_ENABLED') != '1':
+        raise _HTTPException(403, detail='Live AI is disabled. Explicitly set SIGNALROOT_AWS_AI_ENABLED=1 to opt in.')
+    if len(incident.signals)>40:
+        raise _HTTPException(413, detail='Too many signals.')
+    if any(s.source not in ('rds','cloudwatch','ec2','metrics') for s in incident.signals):
+        raise _HTTPException(400, detail='Only sanitized AWS signal sources are permitted.')
+    from ai_engine import analyze_ai, ProviderError
+    try:
+        return {'baseline':diagnose(incident),'ai':analyze_ai(incident),
+                'notice':'This call sends the supplied sanitized observations to the model provider. Hypotheses are not verified root causes.'}
+    except ProviderError as exc:
+        raise _HTTPException(503,detail=str(exc)) from exc
+    except ValueError as exc:
+        raise _HTTPException(400,detail=str(exc)) from exc

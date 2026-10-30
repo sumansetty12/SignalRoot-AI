@@ -2,13 +2,24 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "SignalRootReadOnly",
+      "Sid": "SignalRootReadonlyInvestigation",
       "Effect": "Allow",
       "Action": [
         "cloudwatch:DescribeAlarms",
-        "rds:DescribeEvents"
+        "cloudwatch:GetMetricStatistics",
+        "rds:DescribeEvents",
+        "ec2:DescribeInstances",
+        "ec2:DescribeInstanceStatus"
       ],
       "Resource": "*"
+    },
+    {
+      "Sid": "SignalRootLabLogsOnly",
+      "Effect": "Allow",
+      "Action": [
+        "logs:FilterLogEvents"
+      ],
+      "Resource": "arn:aws:logs:*:*:log-group:/signalroot-lab/*:*"
     }
   ]
 }
