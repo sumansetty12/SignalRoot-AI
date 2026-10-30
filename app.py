@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="SignalRoot AI", version="0.6.0",
+app = FastAPI(title="SignalRoot AI", version="0.6.1",
               description="Evidence-grounded synthetic incident diagnosis baseline")
 
 class Signal(BaseModel):
