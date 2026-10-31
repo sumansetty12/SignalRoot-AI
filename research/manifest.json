@@ -1,0 +1,14 @@
+{
+  "name": "SignalRoot AI Synthetic Stress Evaluation v1",
+  "count": 100,
+  "sha256_cases_json": "6e4d205be299a43b0ce7584750600db654d6872e6f8fcfefcbdfe7f35d356176",
+  "creation": "programmatic fixed-seed synthetic templates",
+  "author_independent": false,
+  "external_validation": false,
+  "label_breakdown": {
+    "Deployment regression": 25,
+    "Dependency or database degradation": 50,
+    "Insufficient evidence": 25
+  },
+  "warning": "Not an independent or real-world benchmark. Label rules are author-designed and partially correlate with rule engine features."
+}

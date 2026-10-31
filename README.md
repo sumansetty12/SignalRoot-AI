@@ -61,3 +61,7 @@ python -m pytest -v
 python benchmark\run_benchmark.py
 python benchmark\challenge_eval.py --engine baseline
 ```
+
+## New research evaluation (v0.9.1 add-on)
+
+See [`research/README.md`](research/README.md) for 100 synthetic cases, independent label caveats, baseline/AI commands, opt-in paid test, and evaluation caveats. This does not alter AWS monitoring or diagnosis production flows.

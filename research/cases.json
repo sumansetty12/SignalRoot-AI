@@ -1,0 +1,2847 @@
+[
+  {
+    "id": "eval-001",
+    "summary": "deployment regression investigation #1",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v2 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-002",
+    "summary": "deployment regression investigation #2",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v3 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "9% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "api",
+        "name": "API p95 latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-003",
+    "summary": "deployment regression investigation #3",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "dependency",
+        "name": "Upstream health",
+        "value": "normal",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v4 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-004",
+    "summary": "deployment regression investigation #4",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v5 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "11% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "rollout",
+        "name": "Deployment rollout",
+        "value": "new build v5",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-005",
+    "summary": "deployment regression investigation #5",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v6 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "12% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "monitor",
+        "name": "User requests",
+        "value": "slower than baseline",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-006",
+    "summary": "deployment regression investigation #6",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "13% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v7 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-007",
+    "summary": "deployment regression investigation #7",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v8 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "api",
+        "name": "API p95 latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "14% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-008",
+    "summary": "deployment regression investigation #8",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "15% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "dependency",
+        "name": "Upstream health",
+        "value": "normal",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v9 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-009",
+    "summary": "deployment regression investigation #9",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "rollout",
+        "name": "Deployment rollout",
+        "value": "new build v10",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v10 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-010",
+    "summary": "deployment regression investigation #10",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "monitor",
+        "name": "User requests",
+        "value": "slower than baseline",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "9% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v11 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-011",
+    "summary": "deployment regression investigation #11",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v12 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-012",
+    "summary": "deployment regression investigation #12",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v13 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "11% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "api",
+        "name": "API p95 latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-013",
+    "summary": "deployment regression investigation #13",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v14 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "12% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "dependency",
+        "name": "Upstream health",
+        "value": "normal",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-014",
+    "summary": "deployment regression investigation #14",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "rollout",
+        "name": "Deployment rollout",
+        "value": "new build v15",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v15 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "13% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-015",
+    "summary": "deployment regression investigation #15",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "monitor",
+        "name": "User requests",
+        "value": "slower than baseline",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "14% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v16 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-016",
+    "summary": "deployment regression investigation #16",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v17 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "15% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-017",
+    "summary": "deployment regression investigation #17",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "api",
+        "name": "API p95 latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v18 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-018",
+    "summary": "deployment regression investigation #18",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "9% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v19 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "dependency",
+        "name": "Upstream health",
+        "value": "normal",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-019",
+    "summary": "deployment regression investigation #19",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v20 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "rollout",
+        "name": "Deployment rollout",
+        "value": "new build v20",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-020",
+    "summary": "deployment regression investigation #20",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "11% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v21 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "monitor",
+        "name": "User requests",
+        "value": "slower than baseline",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-021",
+    "summary": "deployment regression investigation #21",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "12% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v22 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-022",
+    "summary": "deployment regression investigation #22",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "api",
+        "name": "API p95 latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "13% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v23 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-023",
+    "summary": "deployment regression investigation #23",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "14% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "dependency",
+        "name": "Upstream health",
+        "value": "normal",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v24 released",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-024",
+    "summary": "deployment regression investigation #24",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v25 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "15% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "rollout",
+        "name": "Deployment rollout",
+        "value": "new build v25",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-025",
+    "summary": "deployment regression investigation #25",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "monitor",
+        "name": "User requests",
+        "value": "slower than baseline",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "change-tracker",
+        "name": "Release version",
+        "value": "v26 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Deployment regression",
+    "scenario_family": "deployment regression",
+    "label_rationale": "Synthetic injection: a software release preceded failing API requests; other health observations are distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Temporal sequence alone is not proof of causation in real incidents."
+  },
+  {
+    "id": "eval-026",
+    "summary": "database degradation investigation #26",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-027",
+    "summary": "database degradation investigation #27",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v9 released",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-028",
+    "summary": "database degradation investigation #28",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-029",
+    "summary": "database degradation investigation #29",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Aurora database",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-030",
+    "summary": "database degradation investigation #30",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alarm",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-031",
+    "summary": "database degradation investigation #31",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-032",
+    "summary": "database degradation investigation #32",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v9 released",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-033",
+    "summary": "database degradation investigation #33",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-034",
+    "summary": "database degradation investigation #34",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Aurora database",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-035",
+    "summary": "database degradation investigation #35",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alarm",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-036",
+    "summary": "database degradation investigation #36",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-037",
+    "summary": "database degradation investigation #37",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v9 released",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-038",
+    "summary": "database degradation investigation #38",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-039",
+    "summary": "database degradation investigation #39",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Aurora database",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-040",
+    "summary": "database degradation investigation #40",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alarm",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-041",
+    "summary": "database degradation investigation #41",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-042",
+    "summary": "database degradation investigation #42",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v9 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-043",
+    "summary": "database degradation investigation #43",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-044",
+    "summary": "database degradation investigation #44",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Aurora database",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-045",
+    "summary": "database degradation investigation #45",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alarm",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-046",
+    "summary": "database degradation investigation #46",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-047",
+    "summary": "database degradation investigation #47",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v9 released",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-048",
+    "summary": "database degradation investigation #48",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:06:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "10% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-049",
+    "summary": "database degradation investigation #49",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "connection failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Aurora database",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-050",
+    "summary": "database degradation investigation #50",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alarm",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "rds",
+        "name": "Postgres query latency",
+        "value": "2400 ms increased",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection pool",
+        "value": "exhausted",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "database degradation",
+    "label_rationale": "Synthetic injected database connection saturation/failures and slow queries; deployment/error signals alone are non-discriminating.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Database-vs-deployment ambiguity intentionally included; root cause stipulated by scenario author."
+  },
+  {
+    "id": "eval-051",
+    "summary": "upstream dependency degradation investigation #51",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "deployments",
+        "name": "Application release",
+        "value": "v12 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-052",
+    "summary": "upstream dependency degradation investigation #52",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-053",
+    "summary": "upstream dependency degradation investigation #53",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-054",
+    "summary": "upstream dependency degradation investigation #54",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "upstream",
+        "name": "Upstream timeout",
+        "value": "timed out",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-055",
+    "summary": "upstream dependency degradation investigation #55",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-056",
+    "summary": "upstream dependency degradation investigation #56",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "deployments",
+        "name": "Application release",
+        "value": "v12 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-057",
+    "summary": "upstream dependency degradation investigation #57",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-058",
+    "summary": "upstream dependency degradation investigation #58",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-059",
+    "summary": "upstream dependency degradation investigation #59",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "upstream",
+        "name": "Upstream timeout",
+        "value": "timed out",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-060",
+    "summary": "upstream dependency degradation investigation #60",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-061",
+    "summary": "upstream dependency degradation investigation #61",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "deployments",
+        "name": "Application release",
+        "value": "v12 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-062",
+    "summary": "upstream dependency degradation investigation #62",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-063",
+    "summary": "upstream dependency degradation investigation #63",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-064",
+    "summary": "upstream dependency degradation investigation #64",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "upstream",
+        "name": "Upstream timeout",
+        "value": "timed out",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-065",
+    "summary": "upstream dependency degradation investigation #65",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-066",
+    "summary": "upstream dependency degradation investigation #66",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "deployments",
+        "name": "Application release",
+        "value": "v12 released",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-067",
+    "summary": "upstream dependency degradation investigation #67",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-068",
+    "summary": "upstream dependency degradation investigation #68",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-069",
+    "summary": "upstream dependency degradation investigation #69",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "upstream",
+        "name": "Upstream timeout",
+        "value": "timed out",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-070",
+    "summary": "upstream dependency degradation investigation #70",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-071",
+    "summary": "upstream dependency degradation investigation #71",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "deployments",
+        "name": "Application release",
+        "value": "v12 released",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-072",
+    "summary": "upstream dependency degradation investigation #72",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:04:00Z",
+        "source": "api",
+        "name": "HTTP 5xx error rate",
+        "value": "8% elevated",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-073",
+    "summary": "upstream dependency degradation investigation #73",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-074",
+    "summary": "upstream dependency degradation investigation #74",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:05:00Z",
+        "source": "upstream",
+        "name": "Upstream timeout",
+        "value": "timed out",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "degraded",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-075",
+    "summary": "upstream dependency degradation investigation #75",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "upstream",
+        "name": "External service requests",
+        "value": "failed",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:00:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "service-map",
+        "name": "Payment service dependency",
+        "value": "unavailable",
+        "note": ""
+      }
+    ],
+    "expected": "Dependency or database degradation",
+    "scenario_family": "upstream dependency degradation",
+    "label_rationale": "Synthetic injected upstream service unavailability/failure, with potential app errors or deployment distractors.",
+    "label_source": "explicit synthetic injection",
+    "limitations": "Injected upstream failure is stipulated; causal impact on app not independently measured."
+  },
+  {
+    "id": "eval-076",
+    "summary": "insufficient or conflicting evidence investigation #76",
+    "signals": [],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "No telemetry was supplied.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-077",
+    "summary": "insufficient or conflicting evidence investigation #77",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Generic alert provides no discriminating evidence.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-078",
+    "summary": "insufficient or conflicting evidence investigation #78",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "dependency",
+        "name": "Payment dependency",
+        "value": "operational",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "All observed services are healthy.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-079",
+    "summary": "insufficient or conflicting evidence investigation #79",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "RDS event category",
+        "value": "deletion event recorded",
+        "note": "Historical deletion event is not proof of current downtime"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "A historical administrative event does not confirm active degradation.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-080",
+    "summary": "insufficient or conflicting evidence investigation #80",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v4 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection",
+        "value": "timeout",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Competing deployment and database signals; no confirmed discriminator.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-081",
+    "summary": "insufficient or conflicting evidence investigation #81",
+    "signals": [],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "No telemetry was supplied.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-082",
+    "summary": "insufficient or conflicting evidence investigation #82",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Generic alert provides no discriminating evidence.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-083",
+    "summary": "insufficient or conflicting evidence investigation #83",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "dependency",
+        "name": "Payment dependency",
+        "value": "operational",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "All observed services are healthy.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-084",
+    "summary": "insufficient or conflicting evidence investigation #84",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "RDS event category",
+        "value": "deletion event recorded",
+        "note": "Historical deletion event is not proof of current downtime"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "A historical administrative event does not confirm active degradation.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-085",
+    "summary": "insufficient or conflicting evidence investigation #85",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v4 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection",
+        "value": "timeout",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Competing deployment and database signals; no confirmed discriminator.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-086",
+    "summary": "insufficient or conflicting evidence investigation #86",
+    "signals": [],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "No telemetry was supplied.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-087",
+    "summary": "insufficient or conflicting evidence investigation #87",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Generic alert provides no discriminating evidence.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-088",
+    "summary": "insufficient or conflicting evidence investigation #88",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "dependency",
+        "name": "Payment dependency",
+        "value": "operational",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "All observed services are healthy.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-089",
+    "summary": "insufficient or conflicting evidence investigation #89",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "RDS event category",
+        "value": "deletion event recorded",
+        "note": "Historical deletion event is not proof of current downtime"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "A historical administrative event does not confirm active degradation.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-090",
+    "summary": "insufficient or conflicting evidence investigation #90",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v4 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection",
+        "value": "timeout",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Competing deployment and database signals; no confirmed discriminator.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-091",
+    "summary": "insufficient or conflicting evidence investigation #91",
+    "signals": [],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "No telemetry was supplied.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-092",
+    "summary": "insufficient or conflicting evidence investigation #92",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Generic alert provides no discriminating evidence.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-093",
+    "summary": "insufficient or conflicting evidence investigation #93",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "dependency",
+        "name": "Payment dependency",
+        "value": "operational",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "All observed services are healthy.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-094",
+    "summary": "insufficient or conflicting evidence investigation #94",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "RDS event category",
+        "value": "deletion event recorded",
+        "note": "Historical deletion event is not proof of current downtime"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "A historical administrative event does not confirm active degradation.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-095",
+    "summary": "insufficient or conflicting evidence investigation #95",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v4 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection",
+        "value": "timeout",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Competing deployment and database signals; no confirmed discriminator.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-096",
+    "summary": "insufficient or conflicting evidence investigation #96",
+    "signals": [],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "No telemetry was supplied.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-097",
+    "summary": "insufficient or conflicting evidence investigation #97",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "monitoring",
+        "name": "Alert",
+        "value": "triggered",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Generic alert provides no discriminating evidence.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-098",
+    "summary": "insufficient or conflicting evidence investigation #98",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "Database health",
+        "value": "healthy and connected",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:03:00Z",
+        "source": "dependency",
+        "name": "Payment dependency",
+        "value": "operational",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "All observed services are healthy.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-099",
+    "summary": "insufficient or conflicting evidence investigation #99",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "rds",
+        "name": "RDS event category",
+        "value": "deletion event recorded",
+        "note": "Historical deletion event is not proof of current downtime"
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "A historical administrative event does not confirm active degradation.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  },
+  {
+    "id": "eval-100",
+    "summary": "insufficient or conflicting evidence investigation #100",
+    "signals": [
+      {
+        "timestamp": "2026-10-25T12:01:00Z",
+        "source": "deployments",
+        "name": "Release version",
+        "value": "v4 released",
+        "note": ""
+      },
+      {
+        "timestamp": "2026-10-25T12:02:00Z",
+        "source": "rds",
+        "name": "Database connection",
+        "value": "timeout",
+        "note": ""
+      }
+    ],
+    "expected": "Insufficient evidence",
+    "scenario_family": "insufficient or conflicting evidence",
+    "label_rationale": "Competing deployment and database signals; no confirmed discriminator.",
+    "label_source": "expert-defined synthetic uncertainty case",
+    "limitations": "Abstention expected under conservative safety-first labeling policy."
+  }
+]
