@@ -65,3 +65,36 @@ python benchmark\challenge_eval.py --engine baseline
 ## New research evaluation (v0.9.1 add-on)
 
 See [`research/README.md`](research/README.md) for 100 synthetic cases, independent label caveats, baseline/AI commands, opt-in paid test, and evaluation caveats. This does not alter AWS monitoring or diagnosis production flows.
+
+## v0.9.2 — Final development audit and calibration
+
+**This release closes the local pilot feature-development phase; it is not independent publication validation or a production-grade multi-tenant SaaS.** All v0.9.1 code, AWS monitoring, dashboard and 100-case frozen data are preserved.
+
+### Why AI accuracy was 30% in the original 100 cases
+
+The original report mixed valid model abstentions with validator fallback abstentions. We cannot recover every original model decision from its saved final responses. This release adds a separate trace for *new synthetic development examples*. **Do not claim the revised prompt improved performance without live testing and independent holdout cases.**
+
+Copy `research/report_ai.json` from the previous v0.9.1 project folder if available. Then:
+
+```powershell
+python research\audit.py --report research\report_ai.json
+python research\calibrate.py --engine baseline
+```
+
+Run a small **paid AI development experiment** on 6 examples (not a holdout):
+
+```powershell
+$secret = Read-Host "OpenAI API key" -AsSecureString
+$env:OPENAI_API_KEY = [System.Net.NetworkCredential]::new("", $secret).Password
+Remove-Variable secret
+$env:SIGNALROOT_MODEL="gpt-4o-mini"
+python research\calibrate.py --engine ai --variant hypothesis --max-calls 6 --confirm-paid
+```
+
+The new `research/calibration_ai_hypothesis.json` records model raw label, validator disposition and final label for synthetic-only cases. It does not send any real AWS customer logs or secrets, and it cannot diagnose live infrastructure from this report. The request cap counts actual model invocations. Runs may be billable; the project does not impose a dollar spending cap. Review OpenAI billing controls separately.
+
+For comparison, use `--variant conservative` as another explicitly authorized run; these are **new paid calls**, not the original old results. Prompt variants affect the AI evaluation only; the heuristic baseline remains unchanged. The hypothesis prompt asks for evidence-supported failure categories without claiming ultimate root-cause proof, and deliberately removes the baseline guess from the model input. This reduces one source of answer leakage but does not by itself prove any improvement.
+
+The 100 original cases have already been used for development analysis. They are not an independent holdout. Do not publish new scores on them as an unbiased test. Independent labeled incident reports, reviewer agreement, repeated trials, semantic citation audits and cost accounting remain research work.
+
+The audit and calibration artifacts include model output derived from **synthetic** data and are excluded from Git. Never use these raw-output diagnostics with sensitive customer telemetry. Do not commit API keys or `.env` files.

@@ -7,3 +7,7 @@ Not delivered: commercial production service; independently validated diagnostic
 
 ## Research supplement v0.9.1
 100 synthetic scenarios with label provenance and frozen hash; see `research/README.md`. Not externally validated.
+
+
+## v0.9.2 freeze
+Local pilot development frozen with targeted AI abstention audit, optional hypothesis framing, and new synthetic calibration development examples. Independent research validation and production hardening remain separate projects.

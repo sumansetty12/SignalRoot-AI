@@ -13,3 +13,6 @@ benchmark/challenge_report_*.json
 *.sqlite3-wal
 
 research/report_*.json
+
+research/audit_summary.json
+research/calibration_*.json

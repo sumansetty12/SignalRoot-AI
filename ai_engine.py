@@ -56,11 +56,29 @@ def build_messages(incident: Incident, evidence: list[dict], baseline: dict) -> 
         'Recommendations must be read-only investigation steps, not automated remediation. '
         'Evidence with healthy status is not proof a component caused an outage.'
     )
+    variant = os.getenv('SIGNALROOT_PROMPT_VARIANT', 'conservative').strip().lower()
+    if variant not in ('conservative', 'hypothesis'):
+        raise ValueError('SIGNALROOT_PROMPT_VARIANT must be conservative or hypothesis.')
+    if variant == 'hypothesis':
+        instructions += (
+            ' Distinguish identifying a SUPPORTED FAILURE CATEGORY from proving its ultimate root cause. '
+            'Classify Deployment regression when a release signal and correlated error/latency degradation '
+            'are provided; classify Dependency or database degradation when telemetry explicitly describes '
+            'database or upstream failures/timeouts/degraded state. These are provisional categories, not '
+            'proof of causation. Abstain on generic alarms, healthy-only evidence, and unresolved contradictory '
+            'signals. The burden is evidence-backed category recognition, not conclusive root cause proof. '
+            'Do not invent measurements or evidence IDs; cite supporting IDs for non-abstaining categories.'
+        )
     payload = {'incident_id': incident.incident_id, 'summary': incident.summary,
                'signals': evidence,
-               'baseline_for_comparison_only': {
-                   'diagnosis': baseline['diagnosis'],
-                   'note': 'This is a heuristic guess; do not defer to it without examining evidence.'}}
+               }
+    # The original experiment showed the baseline guess; hypothesis variant removes
+    # this source of label leakage, while conservative behavior stays reproducible.
+    if variant == 'conservative':
+        payload['baseline_for_comparison_only'] = {
+            'diagnosis': baseline['diagnosis'],
+            'note': 'This is a heuristic guess; do not defer to it without examining evidence.'
+        }
     return [{'role': 'system', 'content': instructions},
             {'role': 'user', 'content': json.dumps(payload, ensure_ascii=True, default=str)}]
 
